@@ -1,10 +1,10 @@
 // Foursquare API Info
-const clientId = '';
-const clientSecret = '';
+const clientId = '0MZ50F5PFPB5TYHIQ25HJCPTQXALEY00HUYI1UYS4Y40ZEJU';
+const clientSecret = 'UAYC4GHUN2DPPENHADKIEONCKIRNQNFHDVRTQPOUTK4YGD1Z';
 const url = 'https://api.foursquare.com/v2/venues/explore?near=';
 
 // OpenWeather Info
-const openWeatherKey = '2de214ca691679d49ceedbf1bf177f8a';
+const openWeatherKey = '11eba8bb941dd6ed614b3014924cfb60';
 const weatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
 // Page Elements
@@ -18,26 +18,34 @@ const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 
 // Add AJAX functions here:
 const getVenues = async() => {
-    const city = $input.val();
+    const city = $input.val()
     const urlToFetch = `${url}${city}&limit=10&client_id=${clientId}&client_secret=${clientSecret}&v=20180101`;
-    try {
-        const response = await fetch(urlToFetch);
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            const venues = jsonResponse.response.groups[0].items.map(item => item.venue);
-            return venues;
-        }
-    } catch (error) {
-        console.log(error);
+}
+try {
+    const response = await fetch(urlToFetch);
+    if (response.ok) {
+        console.log(response)
+        const jsonResponse = await response.json();
+        console.log(jsonResponse);
+        const venues = jsonResponse.response.groups[0].items.map(item => item.venue);;
+        console.log(venues);
+        return venues;
     }
+    throw new Error('Request failed')
+} catch (error) {
+    console.log(error)
 }
 
 const getForecast = async() => {
-    const urlToFetch = `${weatherUrl}?&q=${$input.val()}&APPID=${openWeatherKey}`;
     try {
+        const urlToFetch = `${weatherUrl}?&q=${$input.val()}&APPID=${openWeatherKey}`;
         const response = await fetch(urlToFetch);
-        const jsonResponse = await response.json();
-        return jsonResponse;
+        if (response.ok) {
+            const jsonResponse = await response.json();
+            console.log(jsonResponse);
+            return jsonResponse;
+        }
+        throw new Error('Request failed')
     } catch (error) {
         console.log(error);
     }
@@ -47,11 +55,9 @@ const getForecast = async() => {
 // Render functions
 const renderVenues = (venues) => {
     $venueDivs.forEach(($venue, index) => {
-        // Add your code here:
         const venue = venues[index];
         const venueIcon = venue.categories[0].icon;
         const venueImgSrc = `${venueIcon.prefix}bg_64${venueIcon.suffix}`;
-
         let venueContent = createVenueHTML(venue.name, venue.location, venueImgSrc);
         $venue.append(venueContent);
     });
@@ -60,6 +66,7 @@ const renderVenues = (venues) => {
 
 const renderForecast = (day) => {
     // Add your code here:
+
     let weatherContent = createWeatherHTML(day);
     $weatherDiv.append(weatherContent);
 }
@@ -69,8 +76,8 @@ const executeSearch = () => {
     $weatherDiv.empty();
     $destination.empty();
     $container.css("visibility", "visible");
-    getVenues().then(venues => renderVenues(venues));
-    getForecast().then(forecast => renderForecast(forecast));
+    getVenues()
+    getForecast()
     return false;
 }
 
